@@ -8,16 +8,18 @@ import glob
 import sys
 import os.path as osp
 
-from src.sxf_tools.sxf import SXF
+from sxf_tools.sxf import SXF
 
 def main():
   parser = argparse.ArgumentParser(description='Process dirs.')
   parser.add_argument('dirs', nargs='+', help='*.sfx files dir or files')
+  parser.add_argument('--out-csv', dest='out_csv', help='output csv [default stdout]')
   args = parser.parse_args()
 
-  writerow = csv.writer(sys.stdout).writerow
+  fout = open(args.out_csv, 'w', newline='') if args.out_csv else sys.stdout
+  writerow = csv.writer(fout).writerow
   writerow([
-    'ver. SXF', 'Номенклатура', 'Масштаб', 'Название', 'Вид ИКМ', 'Тип ИКМ',
+    'ver.SXF', 'Номенклатура', 'Масштаб', 'Название', 'Вид ИКМ', 'Тип ИКМ',
     'К.сумма'])
   for path in walk_args(args.dirs):
     row = get_sxf_info(path)
