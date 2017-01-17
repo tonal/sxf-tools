@@ -20,7 +20,7 @@ if __name__ == "__main__":
             rsc.info()
 
     for i, filename in enumerate(args.files, start=1):
-        sys.stdout.write('%s %s\n' % (i, filename))
+        print('%s %s\n' % (i, filename))
 
         with open(filename, 'rb') as f:
             sxf = SXF.parse(f)

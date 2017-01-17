@@ -4,8 +4,8 @@
 import argparse
 import sys
 
-from rsc import RSC
-from tools import err
+from sxf_tools.rsc import RSC
+from sxf_tools.tools import err
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')

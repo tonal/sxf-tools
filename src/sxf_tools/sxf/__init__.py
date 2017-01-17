@@ -14,8 +14,12 @@ class SXF(object):
     def parse(data):
         sxf = SXF()
         raw = data.read(256)
-        sxf.parse_header(raw)
-
+        ret = sxf.parse_header(raw)
+        if ret == 4:
+            data.seek(0)
+            raw = data.read(400)
+            sxf.parse_header4(raw)
+            return sxf
         raw = data.read(44)
         sxf.parse_descriptor(raw)
 
@@ -50,7 +54,7 @@ class SXF(object):
         if version == 0x0300:
             self.version = version
         else:
-            return self.parse_header4(data)
+            return 4
 
         #  КОHТРОЛЬHАЯ СУММА               + 10      4
         self.crc = struct.unpack('<I', data[10:14])[0]
@@ -183,6 +187,7 @@ class SXF(object):
         version = struct.unpack('<I', data[8:12])[0]
         if version == 0x00040000:
             self.version = version
+            self.version_str = '4.0'
         else:
             raise RuntimeError('Incorrect file version: %s', version)
 
