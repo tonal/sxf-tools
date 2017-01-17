@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import struct
-from tools import split_bits, print_hex, strip_0
+from ..tools import split_bits, print_hex, strip_0
 
 
 class OBJECT_TYPE(object):
@@ -41,28 +41,28 @@ class SxfObject(object):
         return record
 
     def header(self):
-        print 'Record %s-%s type=%s code=%s %sD points=%s subobjects=%s' % (
+        print('Record %s-%s type=%s code=%s %sD points=%s subobjects=%s' % (
             self.group_id, self.id,
             self.localization, self.classifier_code,
             self.dimentions,
             self.points_count,
             self.subitems_count,
-        )
-        print 'is_text_metric=%s metric_type=%s metric_item_size=%s' % (
+        ))
+        print('is_text_metric=%s metric_type=%s metric_item_size=%s' % (
             self.is_text_metric,
             self.metric_type,
             self.metric_item_size,
-        )
-        print 'sematic=%s' % (
+        ))
+        print('sematic=%s' % (
             self.semantic_exists,
-        )
+        ))
 
     def info(self):
         if self.localization == OBJECT_TYPE.LABEL:
             if self.is_text_metric:
-                print 'Text (M):', self.label_text
+                print('Text (M):', self.label_text)
             else:
-                print 'Text (S):', self.semantics
+                print('Text (S):', self.semantics)
 
         # for i in dir(self):
         #     if i.startswith('_'):
@@ -227,9 +227,9 @@ class SxfObject(object):
         #                      ИТОГО :   32 бaйтa
 
     def parse_record_data(self, data):
-        print 'Metrics:'
+        print('Metrics:')
         print_hex(data[0:self.metric_length])
-        print 'Semantic:'
+        print('Semantic:')
         print_hex(data[self.metric_length:])
 
         if self.localization == OBJECT_TYPE.LABEL and self.metric_length != self.points_count * self.metric_record_size:
@@ -241,13 +241,13 @@ class SxfObject(object):
                 self.points_count * self.metric_record_size,
                 self.points_count, self.metric_record_size,
             )
-            print error
+            print(error)
             self.errors.append(error)
             return self
             #raise RuntimeError(error)
 
         idx = 0
-        for i in xrange(self.points_count):
+        for i in range(self.points_count):
             point = struct.unpack(self.metric_record_mask, data[idx:idx + self.metric_record_size])
             idx += self.metric_record_size
             self.points.append(point)
@@ -258,11 +258,11 @@ class SxfObject(object):
             label_text = struct.unpack('<%ss' % l, data[idx:idx + l])[0]
             self.label_text = strip_0(label_text).decode('cp1251')
             idx += l
-        for sid in xrange(self.subitems_count):
+        for sid in range(self.subitems_count):
             subitem_id, subitem_points_count = struct.unpack('<hh', data[idx:idx + 4])
             idx += 4
             self.subitems[subitem_id] = []
-            for i in xrange(subitem_points_count):
+            for i in range(subitem_points_count):
                 point = struct.unpack(self.metric_record_mask, data[idx:idx + self.metric_record_size])
                 idx += self.metric_record_size
                 self.subitems[subitem_id].append(point)

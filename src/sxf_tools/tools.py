@@ -25,7 +25,7 @@ def split_bits(data, mask):
 def chunks(l, n):
     """ Yield successive n-sized chunks from l.
     """
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i + n]
 
 
@@ -75,3 +75,7 @@ def data2dict(desc, data):
         if field_name:
             result[field_name] = value
     return result
+
+def ASCIIZ2str(data: bytes, encoding:str='cp1251'):
+    s = data.split(b'\0', 1)[0].decode(encoding)
+    return s

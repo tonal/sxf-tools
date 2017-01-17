@@ -2,7 +2,7 @@
 
 import struct
 
-from tools import data2dict, split_bits, strip_0, msg, err
+from ..tools import data2dict, split_bits, strip_0, msg, err
 
 
 class Type(object):

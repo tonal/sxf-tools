@@ -1,21 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from tools import split_bits
-
 import struct
 import yaml
 
-from rsc.classifiers import classifiers2dict
-from rsc.semantics import semantics2dict
-from rsc.parameters import parameters2dict
+from .classifiers import classifiers2dict
+from .semantics import semantics2dict
+from .parameters import parameters2dict
 
-from tools import msg, err, data2dict, print_hex
+from ..tools import msg, err, data2dict, print_hex
 
 
 def unicode_representer(dumper, uni):
     node = yaml.ScalarNode(tag=u'tag:yaml.org,2002:str', value=uni)
     return node
-yaml.add_representer(unicode, unicode_representer)
+yaml.add_representer(str, unicode_representer)
 
 RSC_TABLES = (
     'obj',
