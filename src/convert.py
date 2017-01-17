@@ -4,6 +4,8 @@
 import argparse
 import sys
 
+import tools
+
 from rsc import RSC
 from sxf import SXF
 
@@ -20,7 +22,7 @@ if __name__ == "__main__":
             rsc.info()
 
     for i, filename in enumerate(args.files, start=1):
-        sys.err.write('%s %s' % i, filename)
+        sys.stdout.write('%s %s' % (i, filename))
 
         with open(filename, 'rb') as f:
             sxf = SXF.parse(f)
