@@ -226,31 +226,31 @@ class SXF(object):
         #   - Идентификатор зоны МСК-63                      1  A-X или 0
         sim = data[240:304]
         self.modify_map = ASCIIZ2str(struct.unpack('<12s', sim[:12])[0])
-        kind_im = struct.unpack('<B', sim[12:13])[0]
-        self.kind_im = {
-            1: 'картматериал',
-            2: 'фотоплан',
-            3: 'фотоснимок',
-        }.get(kind_im, kind_im)
-        type_im = struct.unpack('<B', sim[13:14])[0]
+        src_kind = struct.unpack('<B', sim[12:13])[0]
+        self.src_kind = {
+            1: 'картматериал (1)',
+            2: 'фотоплан (2)',
+            3: 'фотоснимок (3)',
+        }.get(src_kind, src_kind)
+        src_type = struct.unpack('<B', sim[13:14])[0]
 
-        if kind_im == 1:
+        if src_kind == 1:
             # для картматериала: 1 - тиражный оттиск, 2 - издательский оригинал, 3 - составительский оригинал, 4 - оригинал изменений;
-            self.type_im = {
-                1: 'тиражный оттиск',
-                2: 'издательский оригинал',
-                3: 'составительский оригинал',
-                4: 'оригинал изменений',
-            }.get(type_im, type_im)
-        elif kind_im == 3:
+            self.src_type = {
+                1: 'тиражный оттиск (1)',
+                2: 'издательский оригинал (2)',
+                3: 'составительский оригинал (3)',
+                4: 'оригинал изменений (4)',
+            }.get(src_type, src_type)
+        elif src_kind == 3:
             # для фотоснимков: 1 - космические, 2 - аэроснимки, 3 - фототеодолитные снимки.
-            self.type_im = {
-                1: 'космические',
-                2: 'аэроснимки',
-                3: 'фототеодолитные снимки'
-            }.get(type_im, type_im)
+            self.src_type = {
+                1: 'космические (1)',
+                2: 'аэроснимки (2)',
+                3: 'фототеодолитные снимки (3)'
+            }.get(src_type, src_type)
         else:
-            self.type_im = type_im
+            self.src_type = src_type
 
         self.zine_id_msk63 = struct.unpack('<B', sim[14:15])[0]
 

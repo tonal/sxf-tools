@@ -56,3 +56,5 @@ target/
 .idea/
 .python-version
 venv
+*.csv
+*.7z
