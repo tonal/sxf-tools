@@ -11,7 +11,7 @@ import os.path as osp
 from sxf_tools.sxf import SXF
 
 SXF_PATH = '../../sample'
-OUT_CSV = 'sample.csv'
+OUT_CSV = '' #sample.csv'
 
 def main():
   # parser = argparse.ArgumentParser(description='Process dirs.')
@@ -27,7 +27,7 @@ def main():
   writerow = csv.writer(fout).writerow
   writerow([
     'ver.SXF', 'Номенклатура', 'Масштаб', 'Название', 'Вид ИКМ', 'Тип ИКМ',
-    'К.сумма'])
+    'К.сумма', 'К.сумма файла'])
   for path in walk_args(sxf_path):
     row = get_sxf_info(path)
     writerow(row)
@@ -44,9 +44,23 @@ def walk_args(paths):
 def get_sxf_info(path):
   with open(path, 'rb') as f:
     sxf = SXF.parse(f)
+    crc = calc_check_sum_SXF(f)
     return (
       sxf.version_str, sxf.nomenclatura, sxf.scale, sxf.name,
-      sxf.src_kind, sxf.src_type, hex(sxf.crc))
+      sxf.src_kind, sxf.src_type, "'"+hex(sxf.crc)[2:], "'"+hex(crc)[2:])
+
+def calc_check_sum_SXF(f):
+  # http://gisweb.ru/forum/messages/forum2/topic2255/message13443/#message13443
+  f.seek(0)
+  data = f.read(12)
+  #crc_calk = partial(reduce, lambda x, y: (x + y) & 0xffffffff)
+  cs = sum(memoryview(data).cast('b'))
+  f.read(4)
+  data = f.read()
+  cs = sum(memoryview(data).cast('b'), cs) & 0xffffffff
+  crc = cs
+  return crc
+
 
 if __name__ == '__main__':
   main()
