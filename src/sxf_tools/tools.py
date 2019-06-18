@@ -31,8 +31,11 @@ def chunks(l, n):
 
 def print_hex(data, chunk_size=8):
     for i in chunks(data, chunk_size):
-        ha = [format(ord(p), '02x') for p in i]
-        aa = [p if ord(p) > 32 and ord(p) < 255 else '.' for p in i]
+        ha = [format(p, '02x') for p in i]
+        aa = [
+            chr(p) if 32 <= p < 127 else
+            bytes([p]).decode('cp1251') if p < 256 and p != 0x98 else
+            '.' for p in i]
 
         if len(ha) < chunk_size:
             ha.extend(['__'] * (chunk_size - len(ha)))
@@ -44,7 +47,7 @@ def print_hex(data, chunk_size=8):
 
 
 def strip_0(data):
-    idx = data.find('\0')
+    idx = data.find(0)
     if idx != -1 and idx < len(data):
         data = data[:idx]
     return data.strip()
@@ -76,6 +79,6 @@ def data2dict(desc, data):
             result[field_name] = value
     return result
 
-def ASCIIZ2str(data: bytes, encoding:str='cp1251'):
+def ASCIIZ2str(data:bytes, encoding:str='cp1251'):
     s = data.split(b'\0', 1)[0].decode(encoding)
     return s

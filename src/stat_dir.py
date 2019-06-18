@@ -24,10 +24,12 @@ def main():
   out_csv = OUT_CSV
 
   fout = open(out_csv, 'w', newline='') if out_csv else sys.stdout
-  writerow = csv.writer(fout).writerow
+  writerow = csv.writer(fout, delimiter=';').writerow
   writerow([
     'ver.SXF', 'Номенклатура', 'Номенклатура2', 'Масштаб', 'Название',
-    'Вид ИКМ', 'Тип ИКМ', 'К.сумма', 'К.сумма файла', 'К.сумма разл.'])
+    'Вид ИКМ', 'Тип ИКМ', 'К.сумма', 'К.сумма файла', 'К.сумма разл.', 'coding',
+    'Дата съемки местности'
+  ])
   for path in walk_args(sxf_path):
     row = get_sxf_info(path)
     writerow(row)
@@ -51,7 +53,8 @@ def get_sxf_info(path):
     return (
       sxf.version_str, sxf.nomenclatura, nom, sxf.scale, sxf.name,
       sxf.src_kind, sxf.src_type, "'"+hex(sxf.crc)[2:], "'"+hex(crc)[2:],
-      'Да' if sxf.crc != crc else 'Нет')
+      'Да' if sxf.crc != crc else 'Нет', sxf.encoding,
+      f'{sxf.records_count}', sxf.modify_map)
 
 def calc_check_sum_SXF(f):
   # http://gisweb.ru/forum/messages/forum2/topic2255/message13443/#message13443
